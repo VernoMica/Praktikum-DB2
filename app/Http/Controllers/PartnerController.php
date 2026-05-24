@@ -12,16 +12,8 @@ class PartnerController extends Controller
      */
     public function index()
     {
-        $partners = Partner::latest()->get();
+        $partners = Partner::all();
         return view('admin.partners.index', compact('partners'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        return view('admin.partners.create');
     }
 
     /**
@@ -30,8 +22,16 @@ class PartnerController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:partners,name',
             'logo_url' => 'required|string|max:255',
+        ], [
+            'name.required' => 'Nama partner wajib diisi.',
+            'name.string' => 'Nama partner harus berupa teks.',
+            'name.max' => 'Nama partner tidak boleh lebih dari 255 karakter.',
+            'name.unique' => 'Nama partner sudah terdaftar.',
+            'logo_url.required' => 'URL logo wajib diisi.',
+            'logo_url.string' => 'URL logo harus berupa teks.',
+            'logo_url.max' => 'URL logo tidak boleh lebih dari 255 karakter.',
         ]);
 
         Partner::create([
@@ -43,25 +43,25 @@ class PartnerController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id)
-    {
-        $partner = Partner::findOrFail($id);
-        return view('admin.partners.edit', compact('partner'));
-    }
-
-    /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, $id)
     {
+        $partner = Partner::findOrFail($id);
+
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:partners,name,' . $partner->id,
             'logo_url' => 'required|string|max:255',
+        ], [
+            'name.required' => 'Nama partner wajib diisi.',
+            'name.string' => 'Nama partner harus berupa teks.',
+            'name.max' => 'Nama partner tidak boleh lebih dari 255 karakter.',
+            'name.unique' => 'Nama partner sudah terdaftar.',
+            'logo_url.required' => 'URL logo wajib diisi.',
+            'logo_url.string' => 'URL logo harus berupa teks.',
+            'logo_url.max' => 'URL logo tidak boleh lebih dari 255 karakter.',
         ]);
 
-        $partner = Partner::findOrFail($id);
         $partner->update([
             'name' => $request->name,
             'logo_url' => $request->logo_url,

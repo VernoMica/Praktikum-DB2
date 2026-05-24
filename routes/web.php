@@ -29,9 +29,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
     Route::put('/categories/{id}', [CategoryController::class, 'update'])->name('categories.update');
     Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
     Route::get('/partners', [PartnerController::class, 'index'])->name('partners.index');
-    Route::get('/partners/create', [PartnerController::class, 'create'])->name('partners.create');
     Route::post('/partners', [PartnerController::class, 'store'])->name('partners.store');
-    Route::get('/partners/{id}/edit', [PartnerController::class, 'edit'])->name('partners.edit');
     Route::put('/partners/{id}', [PartnerController::class, 'update'])->name('partners.update');
     Route::delete('/partners/{id}', [PartnerController::class, 'destroy'])->name('partners.destroy');
     Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');
