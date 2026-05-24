@@ -56,7 +56,7 @@
     </div>
 
     <div class="overflow-x-auto">
-        <table class="w-full text-left border-collapse">
+        <table class="w-full text-left border-collapse" id="partner-table">
             <thead class="bg-slate-50 text-slate-400 uppercase text-[10px] font-black tracking-widest border-b">
                 <tr>
                     <th class="px-8 py-4 w-16">No</th>
@@ -69,7 +69,7 @@
                     <th class="px-8 py-4 w-32">Aksi</th>
                 </tr>
             </thead>
-            <tbody class="divide-y border-t">
+            <tbody class="divide-y border-t" id="partner-table-body">
                 @forelse($partners as $partner)
                 <tr class="hover:bg-slate-50/50 transition">
                     <td class="px-8 py-6 font-bold text-slate-400">{{ $loop->iteration }}</td>
@@ -241,7 +241,7 @@
     // Live search partners
     document.getElementById('search-input').addEventListener('keyup', function(e) {
         let query = e.target.value.toLowerCase();
-        let rows = document.querySelectorAll('tbody tr');
+        let rows = document.querySelectorAll('#partner-table-body tr');
         rows.forEach(row => {
             if (row.cells.length < 2) return;
             let id = row.cells[1].textContent.toLowerCase();
