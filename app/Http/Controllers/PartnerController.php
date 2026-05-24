@@ -10,9 +10,16 @@ class PartnerController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $partners = Partner::all();
+        $query = Partner::query();
+
+        if ($request->filled('search')) {
+            $query->where('name', 'LIKE', '%' . $request->search . '%')
+                  ->orWhere('logo_url', 'LIKE', '%' . $request->search . '%');
+        }
+
+        $partners = $query->get();
         return view('admin.partners.index', compact('partners'));
     }
 

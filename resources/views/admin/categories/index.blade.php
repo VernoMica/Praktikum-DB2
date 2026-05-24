@@ -9,7 +9,7 @@
     <button
         onclick="openAddModal()"
         class="px-6 py-3 bg-indigo-600 text-white rounded-2xl font-bold shadow-lg shadow-indigo-100 hover:bg-indigo-700 active:scale-95 transition text-sm">
-        Tambah Kategori
+        + Tambah Kategori
     </button>
 @endsection
 
@@ -50,9 +50,19 @@
     @endif
 
 <div class="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden mb-10">
-    <div class="px-8 py-6 bg-slate-50/50 border-b flex gap-4">
-        <input type="text" id="search-input" placeholder="Cari kategori..."
-            class="flex-1 px-5 py-3 rounded-xl border-slate-200 border bg-white focus:ring-2 focus:ring-indigo-500 outline-none transition text-sm">
+    <div class="px-8 py-6 bg-slate-50/50 border-b">
+        <form action="{{ route('admin.categories.index') }}" method="GET" class="flex gap-4 items-center">
+            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari kategori..."
+                class="flex-1 px-5 py-3 rounded-xl border-slate-200 border bg-white focus:ring-2 focus:ring-indigo-500 outline-none transition text-sm">
+            <button type="submit" class="px-6 py-3 bg-indigo-600 text-white rounded-2xl font-bold hover:bg-indigo-700 active:scale-95 transition text-sm shadow-sm">
+                Cari
+            </button>
+            @if(request('search'))
+                <a href="{{ route('admin.categories.index') }}" class="px-6 py-3 bg-slate-100 border border-slate-200 text-slate-600 rounded-2xl font-bold hover:bg-slate-200 active:scale-95 transition text-sm flex items-center justify-center">
+                    Reset
+                </a>
+            @endif
+        </form>
     </div>
 
     <div class="overflow-x-auto">
@@ -60,8 +70,11 @@
             <thead class="bg-slate-50 text-slate-400 uppercase text-[10px] font-black tracking-widest border-b">
                 <tr>
                     <th class="px-8 py-4 w-16">No</th>
-                    <th class="px-8 py-4">Nama</th>
+                    <th class="px-8 py-4 w-16">ID</th>
+                    <th class="px-8 py-4">Nama Kategori</th>
+                    <th class="px-8 py-4">Slug</th>
                     <th class="px-8 py-4">Dibuat Pada</th>
+                    <th class="px-8 py-4">Diupdate Pada</th>
                     <th class="px-8 py-4 w-32">Aksi</th>
                 </tr>
             </thead>
@@ -69,8 +82,11 @@
                 @forelse($categories as $category)
                 <tr class="hover:bg-slate-50/50 transition">
                     <td class="px-8 py-6 font-bold text-slate-400">{{ $loop->iteration }}</td>
+                    <td class="px-8 py-6 text-slate-500 font-bold">{{ $category->id }}</td>
                     <td class="px-8 py-6 font-black text-slate-800">{{ $category->name }}</td>
-                    <td class="px-8 py-6 text-slate-400 text-sm font-semibold">{{ $category->created_at ? $category->created_at->format('d M Y') : '-' }}</td>
+                    <td class="px-8 py-6 text-slate-600 font-medium">{{ $category->slug }}</td>
+                    <td class="px-8 py-6 text-slate-400 text-sm font-semibold">{{ $category->created_at ? $category->created_at->format('d M Y, H:i') : '-' }}</td>
+                    <td class="px-8 py-6 text-slate-400 text-sm font-semibold">{{ $category->updated_at ? $category->updated_at->format('d M Y, H:i') : '-' }}</td>
                     <td class="px-8 py-6">
                         <div class="flex gap-2">
                             <button
@@ -103,7 +119,7 @@
                 @empty
                 <tr>
                     <td colspan="7" class="px-8 py-12 text-center text-slate-400 font-semibold">
-                        Belum ada kategori yang ditambahkan.
+                        Belum ada kategori yang ditemukan.
                     </td>
                 </tr>
                 @endforelse
@@ -213,22 +229,5 @@
     function closeEditModal() {
         document.getElementById('editModal').classList.add('hidden');
     }
-
-    // Live search categories
-    document.getElementById('search-input').addEventListener('keyup', function(e) {
-        let query = e.target.value.toLowerCase();
-        let rows = document.querySelectorAll('tbody tr');
-        rows.forEach(row => {
-            if (row.cells.length < 2) return;
-            let id = row.cells[1].textContent.toLowerCase();
-            let name = row.cells[2].textContent.toLowerCase();
-            let slug = row.cells[3].textContent.toLowerCase();
-            if (id.includes(query) || name.includes(query) || slug.includes(query)) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
-        });
-    });
 </script>
 @endsection
