@@ -14,8 +14,8 @@ class EventController extends Controller
      */
     public function show($id)
     {
-        // For now, focus only on rendering the view.
-        return view('event-detail');
+        $event = Event::with('category')->findOrFail($id);
+        return view('event-detail', compact('event'));
     }
 
     /**
@@ -30,9 +30,21 @@ class EventController extends Controller
     /**
      * Display the admin listing of events.
      */
-    public function indexAdmin()
+    public function indexAdmin(Request $request)
     {
-        $events = Event::with('category')->get();
+        $query = Event::with('category');
+
+        if ($request->filled('search')) {
+            $query->where(function($q) use ($request) {
+                $q->where('title', 'LIKE', '%' . $request->search . '%')
+                  ->orWhere('location', 'LIKE', '%' . $request->search . '%')
+                  ->orWhereHas('category', function ($catQ) use ($request) {
+                      $catQ->where('name', 'LIKE', '%' . $request->search . '%');
+                  });
+            });
+        }
+
+        $events = $query->get();
         return view('admin.events.index', compact('events'));
     }
 
