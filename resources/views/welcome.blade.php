@@ -52,6 +52,23 @@
         </div>
     </section>
 
+    <!-- Partners Section -->
+    <section class="max-w-7xl mx-auto px-6 py-12 border-y border-slate-100 mb-16 bg-white/30 backdrop-blur rounded-[2.5rem]">
+        <p class="text-center text-slate-400 font-bold uppercase tracking-widest text-[10px] mb-8">Didukung oleh Partner & Sponsor Resmi</p>
+        <div class="flex flex-wrap items-center justify-center gap-8 md:gap-12">
+            @forelse($partners as $partner)
+            <div class="flex items-center gap-3 bg-white px-5 py-3 rounded-2xl border border-slate-100 shadow-sm hover:-translate-y-1 hover:shadow-md transition-all duration-300">
+                <div class="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center p-0.5 border bg-slate-50">
+                    <img src="{{ $partner->logo_url }}" alt="{{ $partner->name }}" class="w-full h-full object-cover rounded-md" onerror="this.src='https://placehold.co/200x200?text=Sponsor';">
+                </div>
+                <span class="font-extrabold text-slate-800 text-sm tracking-tight">{{ $partner->name }}</span>
+            </div>
+            @empty
+            <p class="text-slate-400 text-sm font-semibold">Belum ada partner resmi yang terdaftar.</p>
+            @endforelse
+        </div>
+    </section>
+
     <!-- Blok Navigasi Filter Kategori -->
     <div id="filter-container" class="mb-12 flex flex-wrap gap-3 justify-center">
         <!-- Rujukan awal navigasi bebas bawaan -->

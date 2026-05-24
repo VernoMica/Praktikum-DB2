@@ -9,7 +9,7 @@
     <button
         onclick="openAddModal()"
         class="px-6 py-3 bg-indigo-600 text-white rounded-2xl font-bold shadow-lg shadow-indigo-100 hover:bg-indigo-700 active:scale-95 transition text-sm">
-        + Tambah Partner
+        Tambah Partner
     </button>
 @endsection
 
@@ -70,12 +70,9 @@
             <thead class="bg-slate-50 text-slate-400 uppercase text-[10px] font-black tracking-widest border-b">
                 <tr>
                     <th class="px-8 py-4 w-16">No</th>
-                    <th class="px-8 py-4 w-16">ID</th>
                     <th class="px-8 py-4 w-28">Logo</th>
                     <th class="px-8 py-4">Nama Partner</th>
-                    <th class="px-8 py-4">Logo URL</th>
                     <th class="px-8 py-4">Dibuat Pada</th>
-                    <th class="px-8 py-4">Diupdate Pada</th>
                     <th class="px-8 py-4 w-32">Aksi</th>
                 </tr>
             </thead>
@@ -83,16 +80,13 @@
                 @forelse($partners as $partner)
                 <tr class="hover:bg-slate-50/50 transition">
                     <td class="px-8 py-6 font-bold text-slate-400">{{ $loop->iteration }}</td>
-                    <td class="px-8 py-6 text-slate-500 font-bold">{{ $partner->id }}</td>
                     <td class="px-8 py-6">
                         <div class="w-12 h-12 bg-white rounded-xl shadow-sm border flex items-center justify-center p-1 overflow-hidden">
                             <img src="{{ $partner->logo_url }}" alt="{{ $partner->name }}" class="w-full h-full object-cover rounded-lg" onerror="this.src='https://placehold.co/200x200?text=No+Image';">
                         </div>
                     </td>
                     <td class="px-8 py-6 font-black text-slate-800">{{ $partner->name }}</td>
-                    <td class="px-8 py-6 text-slate-500 font-medium text-xs break-all max-w-[200px]">{{ $partner->logo_url }}</td>
-                    <td class="px-8 py-6 text-slate-400 text-sm font-semibold">{{ $partner->created_at ? $partner->created_at->format('d M Y, H:i') : '-' }}</td>
-                    <td class="px-8 py-6 text-slate-400 text-sm font-semibold">{{ $partner->updated_at ? $partner->updated_at->format('d M Y, H:i') : '-' }}</td>
+                    <td class="px-8 py-6 text-slate-400 text-sm font-semibold">{{ $partner->created_at ? $partner->created_at->format('d M Y') : '-' }}</td>
                     <td class="px-8 py-6">
                         <div class="flex gap-2">
                             <button

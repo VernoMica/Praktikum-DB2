@@ -9,7 +9,7 @@
     <button
         onclick="openAddModal()"
         class="px-6 py-3 bg-indigo-600 text-white rounded-2xl font-bold shadow-lg shadow-indigo-100 hover:bg-indigo-700 active:scale-95 transition text-sm">
-        + Tambah Kategori
+        Tambah Kategori
     </button>
 @endsection
 
@@ -70,11 +70,8 @@
             <thead class="bg-slate-50 text-slate-400 uppercase text-[10px] font-black tracking-widest border-b">
                 <tr>
                     <th class="px-8 py-4 w-16">No</th>
-                    <th class="px-8 py-4 w-16">ID</th>
                     <th class="px-8 py-4">Nama Kategori</th>
-                    <th class="px-8 py-4">Slug</th>
                     <th class="px-8 py-4">Dibuat Pada</th>
-                    <th class="px-8 py-4">Diupdate Pada</th>
                     <th class="px-8 py-4 w-32">Aksi</th>
                 </tr>
             </thead>
@@ -82,11 +79,8 @@
                 @forelse($categories as $category)
                 <tr class="hover:bg-slate-50/50 transition">
                     <td class="px-8 py-6 font-bold text-slate-400">{{ $loop->iteration }}</td>
-                    <td class="px-8 py-6 text-slate-500 font-bold">{{ $category->id }}</td>
                     <td class="px-8 py-6 font-black text-slate-800">{{ $category->name }}</td>
-                    <td class="px-8 py-6 text-slate-600 font-medium">{{ $category->slug }}</td>
-                    <td class="px-8 py-6 text-slate-400 text-sm font-semibold">{{ $category->created_at ? $category->created_at->format('d M Y, H:i') : '-' }}</td>
-                    <td class="px-8 py-6 text-slate-400 text-sm font-semibold">{{ $category->updated_at ? $category->updated_at->format('d M Y, H:i') : '-' }}</td>
+                    <td class="px-8 py-6 text-slate-400 text-sm font-semibold">{{ $category->created_at ? $category->created_at->format('d M Y') : '-' }}</td>
                     <td class="px-8 py-6">
                         <div class="flex gap-2">
                             <button

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Event;
 use App\Models\Category;
+use App\Models\Partner;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -12,6 +13,9 @@ class HomeController extends Controller
     {
         // 1. Ambil semua jenis kategori untuk tampilan filter tab button
         $categories = Category::all();
+
+        // 1.1. Ambil semua jenis partner untuk grid sponsor
+        $partners = Partner::all();
 
         //2. Buat kueri dasar untuk mengambil event:
         // - Gunakan Eager loading `category`
@@ -30,6 +34,6 @@ class HomeController extends Controller
         // 4. Eksekusi query dan kirim data hasilnya ke template Blade
         $events = $query->get();
 
-        return view('welcome', compact('events', 'categories'));
+        return view('welcome', compact('events', 'categories', 'partners'));
     }
 }
