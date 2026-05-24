@@ -8,7 +8,7 @@
 @section('header_right')
     <a href="{{ route('admin.events.create') }}"
         class="px-6 py-3 bg-indigo-600 text-white rounded-2xl font-bold shadow-lg shadow-indigo-100 hover:bg-indigo-700 active:scale-95 transition text-sm flex items-center justify-center">
-        + Tambah Event Baru
+        Tambah Event Baru
     </a>
 @endsection
 
