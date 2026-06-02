@@ -13,10 +13,9 @@ class DatabaseSeeder extends Seeder
     /**
      * Seed the application's database.
      */
-    public function run(): void
-    {
+    public function run() {
         // 1. Akun Admin Utama
-        \App\Models\User::create([
+        User::create([
             'name' => 'Admin Amikom',
             'email' => 'admin@amikom.ac.id',
             'password' => bcrypt('password'),
