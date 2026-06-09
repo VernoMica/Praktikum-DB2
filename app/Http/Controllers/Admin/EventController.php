@@ -32,12 +32,19 @@ class EventController extends Controller
             'date' => 'required|date',
             'location' => 'required|string|max:255',
             'price' => 'required|numeric',
-            'stock' => 'required|numeric'
+            'stock' => 'required|numeric',
+            'poster' => 'nullable|image|max:2048' // Maksimal 2MB
         ]);
 
-        //Menyimpan data yang telah divalidasi ke dalam tabel menggunakan Model
+        if ($request->hasFile('poster')) {
+            // Simpan ke direktori storage/app/public/posters
+            $data['poster_path'] = $request->file('poster')->store('posters', 'public');
+        }
+
+        // Menyimpan data yang telah divalidasi ke dalam tabel menggunakan Model
         \App\Models\Event::create($data);
-        return redirect()->route('admin.events.index')->with('success','Data Event berhasil ditambahkan!');
+        
+        return redirect()->route('admin.events.index')->with('success','Data Event berhasil ditambahkan.');
     }
 
     public function destroy(Event $event)
@@ -61,8 +68,18 @@ class EventController extends Controller
         'date' => 'required|date',
         'location' => 'required|string|max:255',
         'price' => 'required|numeric',
-        'stock' => 'required|numeric'
+        'stock' => 'required|numeric',
+        'poster' => 'nullable|image|max:2048'
         ]);
+
+        if ($request->hasFile('poster')) {
+            // Hapus gambar lama jika sebelumnya sudah memiliki poster
+            if ($event->poster_path) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($event->poster_path);
+            }
+            // Upload gambar baru
+            $data['poster_path'] = $request->file('poster')->store('posters', 'public');
+        }
 
         $event->update($data);
 

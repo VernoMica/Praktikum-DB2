@@ -14,8 +14,14 @@ class EventController extends Controller
      */
     public function show($id)
     {
-        $event = Event::with('category')->findOrFail($id);
-        return view('event-detail', compact('event'));
+        // Mengambil daftar kategori untuk keperluan menu footer
+        $categories = \App\Models\Category::all();
+
+        // Mengambil data event berdasarkan ID
+        $event = Event::findOrFail($id);
+
+        // Me-render view dengan membawa data kategori dan data spesifik acara tersebut
+        return view('event-detail', compact('categories', 'event'));
     }
 
     /**

@@ -31,7 +31,7 @@
     @endif
 
     <div class="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm p-8 md:p-10">
-        <form action="{{ route('admin.events.update', $event->id) }}" method="POST">
+        <form action="{{ route('admin.events.update', $event) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
             <div class="space-y-6">
@@ -85,6 +85,11 @@
                         <input type="number" name="stock" id="stock" value="{{ $event->stock }}" min="0" required placeholder="Contoh: 50"
                             class="w-full px-5 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition text-sm text-slate-800">
                     </div>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block mb-2 font-medium text-gray-700">Poster Event (Opsional)</label>
+                    <input type="file" name="poster" enctype="multipart/form-data" accept="image/*" class="w-full border border-gray-300 p-2.5 rounded">
                 </div>
 
                 <div class="pt-6 border-t border-slate-100 flex justify-end gap-3">
