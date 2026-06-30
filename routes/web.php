@@ -12,11 +12,27 @@ use App\Http\Controllers\PartnerController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\EventController as AdminEventController;
+use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\Admin\TransactionController as AdminTransactionController;
 
+// Home
 Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/events/{event}', [\App\Http\Controllers\EventController::class, 'show'])->name('events.show');
+
+// Events
+Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');
+
+// Checkout
 Route::get('/checkout', [EventController::class, 'checkout'])->name('checkout');
+Route::get('/checkout/{event}', [CheckoutController::class, 'create'])->name('checkout.create');
+Route::post('/checkout/{event}', [CheckoutController::class, 'store'])->name('checkout.store');
+Route::get('/payment/{order_id}', [CheckoutController::class, 'payment'])->name('checkout.payment');
+Route::get('/success/{order_id}', [CheckoutController::class, 'success'])->name('checkout.success');
+
+// Tickets
 Route::get('/ticket/{id}', [TicketController::class, 'show'])->name('ticket.show');
+
+// Admin Transactions
+Route::get('/transactions', [TransactionController::class, 'index'])->name('admin.transactions.index');
 
 // Rute Login umum untuk auth middleware
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');

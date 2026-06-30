@@ -20,29 +20,39 @@
 
 @section('content')
 <div class="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden">
-    <div class="px-8 py-6 bg-slate-50/50 border-b flex gap-4 items-center">
-        <input type="text" placeholder="Cari Order ID, Nama, atau Email..."
-            class="flex-1 px-5 py-3 rounded-2xl border-slate-200 border bg-white focus:ring-2 focus:ring-indigo-500 outline-none transition text-sm">
-        <select
-            class="px-5 py-3 rounded-2xl border-slate-200 border bg-white outline-none text-sm font-bold">
-            <option>Semua Status</option>
-            <option class="text-green-600">Success</option>
-            <option class="text-orange-600">Pending</option>
-            <option class="text-rose-600">Expired</option>
-        </select>
-        <select
-            class="px-5 py-3 rounded-xl border-slate-200 border bg-white outline-none text-sm font-bold">
-            <option>Bulan Ini</option>
-            <option>Bulan Lalu</option>
-            <option>Tahun 2024</option>
-        </select>
+    <div class="px-8 py-6 bg-slate-50/50 border-b">
+        <form action="{{ route('admin.transactions.index') }}" method="GET" class="flex gap-4 items-center m-0">
+            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari Order ID, Nama, atau Email..."
+                class="flex-1 px-5 py-3 rounded-2xl border-slate-200 border bg-white focus:ring-2 focus:ring-indigo-500 outline-none transition text-sm">
+            <select name="status" onchange="this.form.submit()"
+                class="px-5 py-3 rounded-2xl border-slate-200 border bg-white outline-none text-sm font-bold">
+                <option value="Semua Status" {{ request('status') == 'Semua Status' ? 'selected' : '' }}>Semua Status</option>
+                <option class="text-green-600" value="Success" {{ request('status') == 'Success' ? 'selected' : '' }}>Success</option>
+                <option class="text-orange-600" value="Pending" {{ request('status') == 'Pending' ? 'selected' : '' }}>Pending</option>
+                <option class="text-rose-600" value="Expired" {{ request('status') == 'Expired' ? 'selected' : '' }}>Expired</option>
+            </select>
+            <select name="date" onchange="this.form.submit()"
+                class="px-5 py-3 rounded-xl border-slate-200 border bg-white outline-none text-sm font-bold">
+                <option value="Semua Waktu" {{ request('date') == 'Semua Waktu' ? 'selected' : '' }}>Semua Waktu</option>
+                <option value="Bulan Ini" {{ request('date', 'Bulan Ini') == 'Bulan Ini' ? 'selected' : '' }}>Bulan Ini</option>
+                <option value="Bulan Lalu" {{ request('date') == 'Bulan Lalu' ? 'selected' : '' }}>Bulan Lalu</option>
+                <option value="Tahun 2024" {{ request('date') == 'Tahun 2024' ? 'selected' : '' }}>Tahun 2024</option>
+            </select>
+            <button type="submit" class="px-6 py-3 bg-indigo-600 text-white rounded-2xl font-bold hover:bg-indigo-700 active:scale-95 transition text-sm shadow-md shadow-indigo-100">
+                Cari
+            </button>
+            @if(request('search') || request('status') || (request('date') && request('date') !== 'Bulan Ini'))
+                <a href="{{ route('admin.transactions.index') }}" class="px-6 py-3 bg-slate-100 border border-slate-200 text-slate-600 rounded-2xl font-bold hover:bg-slate-200 active:scale-95 transition text-sm flex items-center justify-center">
+                    Reset
+                </a>
+            @endif
+        </form>
     </div>
 
     <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse">
             <thead class="bg-slate-50 text-slate-400 uppercase text-[10px] font-black tracking-widest">
                 <tr>
-                    <th class="px-8 py-4">Order ID</th>
                     <th class="px-8 py-4">Detail Pembeli</th>
                     <th class="px-8 py-4">Event</th>
                     <th class="px-8 py-4">Tgl Transaksi</th>
@@ -51,88 +61,57 @@
                 </tr>
             </thead>
             <tbody class="divide-y border-t">
+                @forelse($transactions as $transaction)
                 <tr class="hover:bg-slate-50/50 transition">
                     <td class="px-8 py-6">
-                        <span
-                            class="font-mono font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-lg text-sm">#TRX-99210</span>
+                        <p class="font-bold text-slate-800">{{ $transaction->customer_name }}</p>
+                        <p class="text-xs text-slate-500">{{ $transaction->customer_email }}</p>
+                        @if($transaction->customer_phone)
+                            <p class="text-[10px] text-slate-400 font-mono">{{ $transaction->customer_phone }}</p>
+                        @endif
                     </td>
                     <td class="px-8 py-6">
-                        <p class="font-bold text-slate-800">Donni Prabowo</p>
-                        <p class="text-xs text-slate-500">donni@example.com</p>
-                    </td>
-                    <td class="px-8 py-6">
-                        <p class="font-medium text-slate-700">Jazz Night 2024</p>
+                        <p class="font-medium text-slate-700">{{ $transaction->event->title ?? 'N/A' }}</p>
                     </td>
                     <td class="px-8 py-6 text-sm text-slate-500">
-                        26 Mar 2024, 17:45
+                        {{ $transaction->created_at->format('d M Y, H:i') }}
                     </td>
                     <td class="px-8 py-6">
-                        <span
-                            class="px-3 py-1 bg-green-100 text-green-700 rounded-lg text-xs font-bold uppercase ring-1 ring-green-200">Success</span>
+                        @if(strtolower($transaction->status) == 'success')
+                            <span
+                                class="px-3 py-1 bg-green-100 text-green-700 rounded-lg text-xs font-bold uppercase ring-1 ring-green-200">Success</span>
+                        @elseif(strtolower($transaction->status) == 'pending')
+                            <span
+                                class="px-3 py-1 bg-orange-100 text-orange-700 rounded-lg text-xs font-bold uppercase ring-1 ring-orange-200">Pending</span>
+                        @elseif(strtolower($transaction->status) == 'expired')
+                            <span
+                                class="px-3 py-1 bg-rose-100 text-rose-700 rounded-lg text-xs font-bold uppercase ring-1 ring-rose-200">Expired</span>
+                        @else
+                            <span
+                                class="px-3 py-1 bg-slate-100 text-slate-600 rounded-lg text-xs font-bold uppercase ring-1 ring-slate-200">{{ $transaction->status }}</span>
+                        @endif
                     </td>
                     <td class="px-8 py-6 text-right font-black text-slate-900">
-                        Rp 155.000
+                        Rp {{ number_format($transaction->total_price, 0, ',', '.') }}
                     </td>
                 </tr>
-                <tr class="hover:bg-slate-50/50 transition text-slate-400">
-                    <td class="px-8 py-6">
-                        <span
-                            class="font-mono font-bold bg-slate-100 px-3 py-1 rounded-lg text-sm">#TRX-99209</span>
-                    </td>
-                    <td class="px-8 py-6">
-                        <p class="font-bold">Maya Sari</p>
-                        <p class="text-xs">maya@example.com</p>
-                    </td>
-                    <td class="px-8 py-6">
-                        <p class="font-medium">AI & Future Workshop</p>
-                    </td>
-                    <td class="px-8 py-6 text-sm">
-                        26 Mar 2024, 15:20
-                    </td>
-                    <td class="px-8 py-6">
-                        <span
-                            class="px-3 py-1 bg-orange-100 text-orange-700 rounded-lg text-xs font-bold uppercase ring-1 ring-orange-200">Pending</span>
-                    </td>
-                    <td class="px-8 py-6 text-right font-black">
-                        Rp 55.000
+                @empty
+                <tr>
+                    <td colspan="5" class="px-8 py-12 text-center text-slate-400 font-semibold">
+                        Belum ada data transaksi.
                     </td>
                 </tr>
-                <tr class="hover:bg-slate-50/50 transition">
-                    <td class="px-8 py-6">
-                        <span
-                            class="font-mono font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-lg text-sm">#TRX-99208</span>
-                    </td>
-                    <td class="px-8 py-6">
-                        <p class="font-bold text-slate-800">Budi Santoso</p>
-                        <p class="text-xs text-slate-500">budi@example.com</p>
-                    </td>
-                    <td class="px-8 py-6">
-                        <p class="font-medium text-slate-700">Hackathon 2024</p>
-                    </td>
-                    <td class="px-8 py-6 text-sm text-slate-500">
-                        25 Mar 2024, 10:00
-                    </td>
-                    <td class="px-8 py-6">
-                        <span
-                            class="px-3 py-1 bg-slate-100 text-slate-600 rounded-lg text-xs font-bold uppercase ring-1 ring-slate-200">Free</span>
-                    </td>
-                    <td class="px-8 py-6 text-right font-black text-slate-900">
-                        Rp 0
-                    </td>
-                </tr>
+                @endforelse
             </tbody>
         </table>
     </div>
 
     <div class="px-8 py-6 bg-slate-50/50 border-t flex justify-between items-center">
-        <p class="text-sm text-slate-500 font-medium">Menampilkan 3 dari 124 transaksi</p>
+        <p class="text-sm text-slate-500 font-medium">
+            Menampilkan {{ $transactions->count() > 0 ? $transactions->firstItem() : 0 }} sampai {{ $transactions->count() > 0 ? $transactions->lastItem() : 0 }} dari {{ $transactions->total() }} transaksi
+        </p>
         <div class="flex gap-2">
-            <button
-                class="px-4 py-2 border rounded-xl hover:bg-white transition text-sm font-bold opacity-50 cursor-not-allowed">Previous</button>
-            <button class="px-4 py-2 bg-indigo-600 text-white rounded-xl shadow-md text-sm font-bold">1</button>
-            <button class="px-4 py-2 border rounded-xl hover:bg-white transition text-sm font-bold">2</button>
-            <button
-                class="px-4 py-2 border rounded-xl hover:bg-white transition text-sm font-bold">Next</button>
+            {{ $transactions->links() }}
         </div>
     </div>
 </div>
