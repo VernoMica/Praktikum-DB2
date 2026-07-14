@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Middleware\IsAdmin;
+use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -11,10 +13,13 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        // Register middleware aliases (array required)
+        // Mengecualikan route webhook Midtrans dari blokir CSRF
+        $middleware->validateCsrfTokens(except: [
+            'midtrans/callback',
+        ]);
+
         $middleware->alias([
-            'auth'  => \Illuminate\Auth\Middleware\Authenticate::class,
-            'admin' => \App\Http\Middleware\IsAdmin::class,
+            'admin' => IsAdmin::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

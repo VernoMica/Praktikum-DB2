@@ -1,19 +1,17 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\EventController;
-use App\Http\Controllers\TicketController;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\TransactionController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\PartnerController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\EventController as AdminEventController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CheckoutController;
-use App\Http\Controllers\Admin\TransactionController as AdminTransactionController;
+use App\Http\Controllers\EventController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MidtransWebhookController;
+use App\Http\Controllers\PartnerController;
+use App\Http\Controllers\TicketController;
+use App\Http\Controllers\TransactionController;
+use Illuminate\Support\Facades\Route;
 
 // Home
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -27,6 +25,9 @@ Route::get('/checkout/{event}', [CheckoutController::class, 'create'])->name('ch
 Route::post('/checkout/{event}', [CheckoutController::class, 'store'])->name('checkout.store');
 Route::get('/payment/{order_id}', [CheckoutController::class, 'payment'])->name('checkout.payment');
 Route::get('/success/{order_id}', [CheckoutController::class, 'success'])->name('checkout.success');
+
+// Midtrans Callback
+Route::post('/midtrans/callback', [MidtransWebhookController::class, 'handle']);
 
 // Tickets
 Route::get('/ticket/{id}', [TicketController::class, 'show'])->name('ticket.show');
